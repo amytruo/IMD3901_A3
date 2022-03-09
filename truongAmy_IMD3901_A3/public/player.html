@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Player</title>
+        <meta charset="utf-8" />
+        <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+        <link rel="stylesheet" href="css/main.css">
+        <script src="js/sound.js"></script>
+    </head>
+
+    <body>
+        <div class="card">
+            <div class="card-header">Welcome to the piano room (player)</div>
+            <div class="card-body" id="timer3D">Time taken: 0</div>
+            <div class="card-body" id="scoreText">Fastest Time:</div>
+            <div class="card-body" id="scores" style="display:none;">0</div>
+            <div id="songA" style="display:none;">
+                <div class="card-header">Mary Had a Little Lamb</div>
+                <div class="card-body">
+                    E D C D E E E D D D E G G E D C D E E E E D D E D C
+                </div>
+            </div>
+            <div id="songB" style="display:none;">
+                <div class="card-header">Red Swan</div>
+                <div class="card-body">
+                    F F F G G F <br>
+                    C F F E D E <br>
+                    F G G F F   <br>
+                    D D E F F   <br>
+                    G G G A A   <br>
+                    A A A A G F A  <br>
+                    A A Bflat A G  <br>
+                    A A Bflat A G  <br>
+                    F G G F
+                </div>
+            </div>
+            <div id="songC" style="display:none;">
+                <div class="card-header">The Black Pearl</div>
+                <div class="card-body">
+                    D D E F D E D C <br>
+                    D D E F D E F G <br>
+                    G G A Bflat D F E D E D C D
+                </div>
+            </div>
+        </div>
+       </div>
+       <button class="btn btn-primary" id="displaySongA" style="background-color:rgb(0, 0, 0); color:rgb(255, 255, 255)">Mary Had a Little Lamb</button>
+       <button class="btn btn-primary" id="displaySongB" style="background-color:rgb(0, 0, 0); color:rgb(255, 255, 255)">Red Swan (Attack on Titan)</button>
+       <button class="btn btn-primary" id="displaySongC" style="background-color:rgb(0, 0, 0); color:rgb(255, 255, 255)">The Black Pearl (Pirates of the Carribean)</button>
+    
+        <div id="controls">
+        <button id="go">Go</button>
+        <button onclick='stopTimer()'  id='stop'>Stop</button>
+        </div>
+        
+        <a-scene background="color:rgb(0, 0, 0);">
+            <a-entity camera wasd-controls look-controls position="0 5 10">
+                <a-entity cursor="rayOrigin:mouse;" raycaster="far:20; interval:200; objects:.interactive"></a-entity>
+            </a-entity>
+            <a-assets>
+                <img id="pianoimg" src="/assets/piano_key_chart.png" crossorigin="anonymous">        
+
+                <!--audio assets-->
+                <audio id="c" src="assets/piano_keys/c.mp3" preload="auto" crossorigin="anonymous"></audio>
+                <audio id="csharp" src="assets/piano_keys/csharp.mp3" preload="auto" crossorigin="anonymous"></audio>
+                <audio id="d" src="assets/piano_keys/d.mp3" preload="auto" crossorigin="anonymous"></audio>
+                <audio id="eflat" src="assets/piano_keys/eflat.mp3" preload="auto" crossorigin="anonymous"></audio>
+                <audio id="e" src="assets/piano_keys/e.mp3" preload="auto" crossorigin="anonymous"></audio>
+                <audio id="f" src="assets/piano_keys/f.mp3" preload="auto" crossorigin="anonymous"></audio>
+                <audio id="fsharp" src="assets/piano_keys/fsharp.mp3" preload="auto" crossorigin="anonymous"></audio>
+                <audio id="g" src="assets/piano_keys/g.mp3" preload="auto" crossorigin="anonymous"></audio>
+                <audio id="aflat" src="assets/piano_keys/aflat.mp3" preload="auto" crossorigin="anonymous"></audio>
+                <audio id="a" src="assets/piano_keys/a.mp3" preload="auto" crossorigin="anonymous"></audio>
+                <audio id="bflat" src="assets/piano_keys/bflat.mp3" preload="auto" crossorigin="anonymous"></audio>
+                <audio id="b" src="assets/piano_keys/b.mp3" preload="auto" crossorigin="anonymous"></audio>
+            </a-assets>
+           
+            <a-entity id="ground" geometry="primitive:box; width:250; depth:250;height:0.5" material="color:lightgrey;" body="type:static; shape:box;" position="0 -2 0" ></a-entity>
+         
+            <a-entity id="piano_image" position="2 4 -5" scale="3 3 3"
+                  geometry="primitive:plane; width:1.5; height:1.0;" 
+                  material="src:#pianoimg">
+            </a-entity>
+
+            <a-entity id="piano" position="0 1 0">
+                <a-entity id="white_button" position="5 0.6 -1">
+                    <a-entity class="button interactive" onclick="playB()" position="0 0.6 0" geometry="primitive:box;  width:1; depth:3; height:0.8;" material="color:rgb(255, 255, 255)"
+                                animation__mouseenter="property:material.color; type:color; to:rgb(100, 100, 100); startEvents:mouseenter; dur:200"
+                                animation__mouseleave="property:material.color; type:color; to:rgb(255, 255, 255); startEvents:mouseleave; dur:200"
+                                animation__click="property:position.y; from:0.55; to:0.6; startEvents:click; dur:300" shadow></a-entity>
+                </a-entity>
+
+                <a-entity id="bflat_key" position="4.5 0.9 -1">
+                    <a-entity class="button interactive" onclick="playBflat()" position="0 0.9 0" geometry="primitive:box;  width:0.3; depth:2; height:0.3;" material="color:rgb(0, 0, 0)"
+                                animation__mouseenter="property:material.color; type:color; to:rgb(100, 100, 100); startEvents:mouseenter; dur:200"
+                                animation__mouseleave="property:material.color; type:color; to:rgb(0, 0, 0); startEvents:mouseleave; dur:200"
+                                animation__click="property:position.y; from:0.8; to:0.9; startEvents:click; dur:300"></a-entity>
+                </a-entity>
+
+                <a-entity id="pink_button" position="4 0.6 -1">
+                    <a-entity class="button interactive" onclick="playA()"  position="0 0.6 0" geometry="primitive:box;  width:1; depth:3; height:0.8;" material="color:rgb(235, 77, 180)"
+                                animation__mouseenter="property:material.color; type:color; to:rgb(255, 131, 198); startEvents:mouseenter; dur:200"
+                                animation__mouseleave="property:material.color; type:color; to:rgb(235, 77, 180); startEvents:mouseleave; dur:200"
+                                animation__click="property:position.y; from:0.55; to:0.6; startEvents:click; dur:300" shadow></a-entity>
+                </a-entity>
+                                
+                <a-entity id="aflat_key" position="3.5 0.9 -1">
+                    <a-entity class="button interactive" onclick="playAflat()" position="0 0.9 0" geometry="primitive:box;  width:0.3; depth:2; height:0.3;" material="color:rgb(0, 0, 0)"
+                                animation__mouseenter="property:material.color; type:color; to:rgb(100, 100, 100); startEvents:mouseenter; dur:200"
+                                animation__mouseleave="property:material.color; type:color; to:rgb(0, 0, 0); startEvents:mouseleave; dur:200"
+                                animation__click="property:position.y; from:0.8; to:0.9; startEvents:click; dur:300"></a-entity>
+                </a-entity>
+
+                <a-entity id="purple_button" position="2 0.6 -1">
+                    <a-entity class="button interactive" onclick="playF()"  position="0 0.6 0" geometry="primitive:box;  width:1; depth:3; height:0.8;" material="color:rgb(132, 0, 255)"
+                                animation__mouseenter="property:material.color; type:color; to:rgb(80, 0, 200); startEvents:mouseenter; dur:200"
+                                animation__mouseleave="property:material.color; type:color; to:rgb(132, 0, 255); startEvents:mouseleave; dur:200"
+                                animation__click="property:position.y; from:0.55; to:0.6; startEvents:click; dur:300" shadow></a-entity>
+                </a-entity>
+
+                <a-entity id="yellow_button" position="3 0.6 -1">
+                    <a-entity class="button interactive" onclick="playG()" position="0 0.6 0" geometry="primitive:box;  width:1; depth:3; height:0.8;" material="color:rgb(255, 225, 0)"
+                                animation__mouseenter="property:material.color; type:color; to:rgb(255, 255, 166); startEvents:mouseenter; dur:200"
+                                animation__mouseleave="property:material.color; type:color; to:rgb(255, 225, 0); startEvents:mouseleave; dur:200"
+                                animation__click="property:position.y; from:0.55; to:0.6; startEvents:click; dur:300" shadow></a-entity>
+                </a-entity>
+
+                <a-entity id="fsharp_key" position="2.5 0.9 -1">
+                    <a-entity class="button interactive" onclick="playFsharp()" position="0 0.9 0" geometry="primitive:box;  width:0.3; depth:2; height:0.3;" material="color:rgb(0, 0, 0)"
+                                animation__mouseenter="property:material.color; type:color; to:rgb(100, 100, 100); startEvents:mouseenter; dur:200"
+                                animation__mouseleave="property:material.color; type:color; to:rgb(0, 0, 0); startEvents:mouseleave; dur:200"
+                                animation__click="property:position.y; from:0.8; to:0.9; startEvents:click; dur:300"></a-entity>
+                </a-entity>
+
+                <a-entity id="red_button" position="1 0.6 -1">
+                    <a-entity class="button interactive" onclick="playE()" position="0 0.6 0" geometry="primitive:box;  width:1; depth:3; height:0.8;" material="color:rgb(255, 100, 100)"
+                                animation__mouseenter="property:material.color; type:color; to:rgb(255, 0, 0); startEvents:mouseenter; dur:200"
+                                animation__mouseleave="property:material.color; type:color; to:rgb(255, 100, 100); startEvents:mouseleave; dur:200"
+                                animation__click="property:position.y; from:0.55; to:0.6; startEvents:click; dur:300"></a-entity>
+                </a-entity>
+
+                <a-entity id="csharp_key" position="-0.5 0.9 -1">
+                    <a-entity class="button interactive" onclick="playCsharp()" position="0 0.9 0" geometry="primitive:box;  width:0.3; depth:2; height:0.3;" material="color:rgb(0, 0, 0)"
+                                animation__mouseenter="property:material.color; type:color; to:rgb(100, 100, 100); startEvents:mouseenter; dur:200"
+                                animation__mouseleave="property:material.color; type:color; to:rgb(0, 0, 0); startEvents:mouseleave; dur:200"
+                                animation__click="property:position.y; from:0.8; to:0.9; startEvents:click; dur:300"></a-entity>
+                </a-entity>
+
+                <a-entity id="eflat_key" position="0.5 0.9 -1">
+                    <a-entity class="button interactive"onclick="playEflat()" position="0 0.9 0" geometry="primitive:box;  width:0.3; depth:2; height:0.3;" material="color:rgb(0, 0, 0)"
+                                animation__mouseenter="property:material.color; type:color; to:rgb(100, 100, 100) startEvents:mouseenter; dur:200"
+                                animation__mouseleave="property:material.color; type:color; to:rgb(0, 0, 0); startEvents:mouseleave; dur:200"
+                                animation__click="property:position.y; from:0.8; to:0.9; startEvents:click; dur:300"></a-entity>
+                </a-entity>
+
+                <a-entity id="green_button" position="0 0.6 -1">
+                    <a-entity class="button interactive" onclick="playD()" position="0 0.6 0" geometry="primitive:box;  width:1; depth:3; height:0.8;" material="color:rgb(100, 255, 100)"
+                                animation__mouseenter="property:material.color; type:color; to:rgb(0, 100, 0); startEvents:mouseenter; dur:200"
+                                animation__mouseleave="property:material.color; type:color; to:rgb(100, 255, 100); startEvents:mouseleave; dur:200"
+                                animation__click="property:position.y; from:0.55; to:0.6; startEvents:click; dur:300"></a-entity>
+                </a-entity>
+
+                <a-entity id="blue_button" position="-1 0.6 -1">
+                    <a-entity class="button interactive" onclick="playC()" position="0 0.6 0" geometry="primitive:box;  width:1; depth:3; height:0.8;" material="color:rgb(100, 100, 255)"
+                                animation__mouseenter="property:material.color; type:color; to:rgb(0, 0, 255); startEvents:mouseenter; dur:200"
+                                animation__mouseleave="property:material.color; type:color; to:rgb(100, 100, 255); startEvents:mouseleave; dur:200"
+                                animation__click="property:position.y; from:0.55; to:0.6; startEvents:click; dur:300" shadow></a-entity>
+                </a-entity>
+
+
+            </a-entity>
+        </a-scene>  
+        <script src="js/timer.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            var counter = 0;
+            let time = 0;
+            let timeout;
+            var highScore = Number(0)
+            
+            function timer(){
+                document.getElementById("timer3D").innerHTML = ++time;
+            }
+
+            function timerInterval() {
+                timeout = setInterval(() => timer(), 1000);
+            }
+            function stopTimerInterval() {
+                clearInterval(timeout)
+                displayScores()
+                console.log(time)
+                counter = 0
+                time = 0
+            }
+            
+            // display the fastest time taken to complete a song
+            function displayScores() {
+                let userScore =  document.getElementById('scores')
+
+                if (highScore == 0) {
+                    highScore = time      
+                    console.log("highscore is ", highScore)
+                    userScore.innerHTML = highScore
+                }
+                else if (Number(time) < highScore) {
+                    highScore = time      
+                    console.log("highscore is ", highScore)
+                    userScore.innerHTML = highScore
+                }
+                userScore.style.display = "block";
+            }
+
+
+            function songA() {
+                let songInstruct =  document.getElementById('songA');
+                if (songInstruct.style.display === "none") {
+                    songInstruct.style.display = "block";
+                }
+                else{
+                    songInstruct.style.display = "none";
+                }
+            }
+
+            function songB() {
+                let songInstruct =  document.getElementById('songB');
+                if (songInstruct.style.display === "none") {
+                    songInstruct.style.display = "block";
+                }
+                else{
+                    songInstruct.style.display = "none";
+                }
+            }
+  
+            function songC() {
+                let songInstruct =  document.getElementById('songC');
+                if (songInstruct.style.display === "none") {
+                    songInstruct.style.display = "block";
+                }
+                else{
+                    songInstruct.style.display = "none";
+                }
+            }
+
+            const socket = io();
+
+            socket.on('connect', (userData) => {
+                console.log('I exist!');
+
+                // start timer on button press
+               document.querySelector('#go').addEventListener('click', function(){
+                    socket.emit('start');
+                });
+
+                socket.on('start_timer', function(data){
+                    counter+=1;
+                    if (counter == 1){
+                        timerInterval();  
+                    }
+                }); 
+                               
+                // stop timer on button press
+                document.querySelector('#stop').addEventListener('click', function(){
+                    socket.emit('pause');
+                });
+
+                socket.on('pause_timer', function(data){
+                    stopTimerInterval();
+                }); 
+
+                // for music sheets
+                document.querySelector('#displaySongA').addEventListener('click', function(){
+                socket.emit('display_song');
+                });
+
+                socket.on('showSongA', function(data){
+                    songA();
+                }); 
+                                
+                document.querySelector('#displaySongB').addEventListener('click', function(){
+                    socket.emit('display_songB');
+                });
+
+                socket.on('showSongB', function(data){
+                    songB();
+                }); 
+           
+                document.querySelector('#displaySongC').addEventListener('click', function(){
+                    socket.emit('display_songC');
+                });
+
+                socket.on('showSongC', function(data){
+                    songC();
+                }); 
+
+                //put code here so that we know that socket.io has initailized ...
+                document.querySelector('#white_button').querySelector('.button').addEventListener('click', function(){
+                    socket.emit('white');
+                });
+
+                document.querySelector('#bflat_key').querySelector('.button').addEventListener('click', function(){
+                    socket.emit('bflat');
+                });
+
+                document.querySelector('#pink_button').querySelector('.button').addEventListener('click', function(){
+                    socket.emit('pink');
+                });
+
+                document.querySelector('#aflat_key').querySelector('.button').addEventListener('click', function(){
+                    socket.emit('aflat');
+                });
+
+                document.querySelector('#purple_button').querySelector('.button').addEventListener('click', function(){
+                    socket.emit('purple');
+                });
+                document.querySelector('#yellow_button').querySelector('.button').addEventListener('click', function(){
+                    socket.emit('yellow');
+                });
+                document.querySelector('#fsharp_key').querySelector('.button').addEventListener('click', function(){
+                    socket.emit('fsharp');
+                });
+                document.querySelector('#red_button').querySelector('.button').addEventListener('click', function(){
+                    socket.emit('red');
+                });
+
+                document.querySelector('#csharp_key').querySelector('.button').addEventListener('click', function(){
+                    socket.emit('csharp');
+                });
+
+                document.querySelector('#eflat_key').querySelector('.button').addEventListener('click', function(){
+                    socket.emit('eflat');
+                });
+
+                document.querySelector('#green_button').querySelector('.button').addEventListener('click', function(){
+                    socket.emit('green');
+                });
+
+                document.querySelector('#blue_button').querySelector('.button').addEventListener('click', function(){
+                    socket.emit('blue');
+                });
+            });
+
+            //listen to event from server
+            socket.on('color_change', (data) => {
+                let colorStr = 'rgb(' + data.r + ',' + data.g + ',' + data.b + ')';
+                console.log('color_change:' + colorStr);
+                //document.body.style.backgroundColor = colorStr;
+                document.querySelector('a-scene').setAttribute('background', {color:colorStr});
+            });
+
+        </script>
+
+    </body>
+</html>

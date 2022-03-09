@@ -1,0 +1,18 @@
+.card {
+  z-index: 2;
+  width: 70%;
+  margin: 10px;
+  position: relative;
+  background-color:white;
+}
+
+#songA {
+  background-color:white;
+  color: black;
+  z-index: 5;
+}
+
+ a-scene {
+     z-index:0;
+ }
+
